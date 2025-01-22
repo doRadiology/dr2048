@@ -31,6 +31,8 @@ export default class Game2048 extends Component {
 
   @tracked isRowColMode = this.isMobile ? false : true;
 
+  @tracked isInfoDialogOpen = false;
+
   gridSize = 3;
   tileId = 0;
 
@@ -162,6 +164,10 @@ export default class Game2048 extends Component {
 
   toggleMode = () => {
     this.isRowColMode = !this.isRowColMode;
+  };
+
+  toggleInfoDialog = () => {
+    this.isInfoDialogOpen = !this.isInfoDialogOpen;
   };
  
   handleKeyDown = (event: KeyboardEvent) => {
@@ -646,10 +652,16 @@ export default class Game2048 extends Component {
 
   <template>
     <div class='flex flex-col items-center justify-start min-h-screen'>
-      <h1 class='text-4xl font-bold mb-4 mt-4'>dr2048</h1>
+      <!-- Header Container -->
+      <div class="relative w-full flex items-center">
+        <h1 class="text-4xl font-bold mb-4 mt-4 w-full text-center">dr2048</h1>        
+        <button type="button" class="absolute right-4 top p-2 border rounded" style="background-color: #888; color: black;" title="Info" {{on "click" this.toggleInfoDialog}}>❔</button>
+      </div>
+      <!-- Score Display -->
       <div class='text-2xl mb-4'>Score:
         {{this.score}}{{#if this.showMaxScore}}, Max:
           {{this.maxScore}}{{/if}}</div>
+      <!-- Game Container -->
       <div
         class='game-container relative'
         style.width={{this.gridWidth}}
@@ -687,6 +699,7 @@ export default class Game2048 extends Component {
           </div>
         {{/each}}
       </div>
+      <!-- Toggles -->
       {{#if this.gameOver}}
         <div class='mt-4 text-red-600 text-xl font-bold'>Game Over!</div>
       {{/if}}
@@ -702,6 +715,23 @@ export default class Game2048 extends Component {
           {{on 'click' this.toggleMode}}
         >{{if this.isRowColMode 'RowCol' 'Random'}}
         </button>
+      {{/if}}      
+      {{#if this.isInfoDialogOpen}}
+        <div class="fixed inset-0 bg-gray-800 bg-opacity-50 flex items-center justify-center z-50" style="transform: translateY(-10%);">
+          <div class="bg-gray-200 p-6 rounded shadow-lg max-w-md w-full text-center">
+            <h2 class="text-2xl text-black font-bold mb-4">3x3 Mobile Only</h2>
+            <p class="text-gray-900 mb-4">
+              (Credits: forked from <a href="https://github.com/lifeart">@LifeArt</a>)<br><br>
+              A variant of the original 2048 game with the option to (temporarily) remove the (mis)fortune factor.<br><br>
+              <u>Mobile only</u>: swipe over a row or column to determine the destination of the new tile.<br><br>
+              Toggle between `Random mode` (original game play) and `RowCol mode` (swipe over destination row/col)<br>
+            </p>
+            <p class="text-gray-500 text-sm">
+              <a href="https://bsky.app/profile/doradiology.com">bsky: @doRadiology.com</a><br><br>
+            </p>
+            <button type="button" class="mt-4 px-4 py-2 bg-blue-500 text-white rounded" {{on "click" this.toggleInfoDialog}}>Close</button>
+          </div>
+        </div>
       {{/if}}
     </div>
   </template>
