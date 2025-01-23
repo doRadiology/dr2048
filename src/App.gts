@@ -30,6 +30,7 @@ export default class Game2048 extends Component {
   @tracked maxScore = 0;
 
   @tracked isRowColMode = this.isMobile ? true : false;
+  @tracked isFixedFourMode = false;
 
   @tracked isInfoDialogOpen = false;
 
@@ -104,7 +105,7 @@ export default class Game2048 extends Component {
 
     const randomCell = emptyCells[Math.floor(Math.random() * emptyCells.length)];
     const tile: Tile = {
-      value: Math.random() < 0.9 ? 2 : 4,
+      value: this.isFixedFourMode ? 4 : (Math.random() < 0.9 ? 2 : 4),
       id: this.tileId++,
       merged: false,
       className: '',
@@ -164,6 +165,10 @@ export default class Game2048 extends Component {
 
   toggleMode = () => {
     this.isRowColMode = !this.isRowColMode;
+  };
+
+  toggleFixedFourMode = () => {
+    this.isFixedFourMode = !this.isFixedFourMode;
   };
 
   toggleInfoDialog = () => {
@@ -709,12 +714,20 @@ export default class Game2048 extends Component {
         {{on 'click' this.resetGame}}
       >New Game</button>
       {{#if this.isMobile}}
-        <button
-          type="button"
-          class={{if this.isRowColMode "mt-4 px-4 py-2 bg-red-500 text-white rounded" "mt-4 px-4 py-2 bg-gray-500 text-white rounded"}}
-          {{on 'click' this.toggleMode}}
-        >{{if this.isRowColMode 'RowCol' 'Random'}}
-        </button>
+        <div class='flex flex-row items-center gap-[10px]'>
+          <button
+            type="button"
+            class={{if this.isRowColMode "mt-4 px-4 py-2 bg-red-500 text-white rounded" "mt-4 px-4 py-2 bg-gray-500 text-white rounded"}}
+            {{on 'click' this.toggleMode}}
+          >{{if this.isRowColMode 'RowCol' 'Random'}}
+          </button>
+          <button
+            type="button"
+            class={{if this.isFixedFourMode "mt-4 px-4 py-2 bg-red-500 text-white rounded" "mt-4 px-4 py-2 bg-gray-500 text-white rounded"}}
+            {{on 'click' this.toggleFixedFourMode}}
+          >{{if this.isFixedFourMode '4ever' '2|4'}}
+          </button>
+          </div>
       {{/if}}      
       {{#if this.isInfoDialogOpen}}
         <div class="fixed inset-0 bg-gray-800 bg-opacity-50 flex items-center justify-center z-50" style="transform: translateY(-10%);">
