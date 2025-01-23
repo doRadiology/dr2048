@@ -72,9 +72,9 @@ export default class Game2048 extends Component {
 
   addRandomTile(direction?: Direction, targetIndex?: number) {
     if ( typeof targetIndex === 'number' ) {
-      console.log('Adding tile with direction:', direction, 'and targetIndex:', targetIndex+1);
+      // console.log('Adding tile with direction:', direction, 'and targetIndex:', targetIndex+1);
     } else {
-      console.log('Adding RANDOM tile');
+      // console.log('Adding RANDOM tile');
     }
     const emptyCells = [];
     for (let x = 0; x < this.gridSize; x++) {
@@ -121,10 +121,10 @@ export default class Game2048 extends Component {
 
     if ( typeof targetIndex === 'number' ) {
       if (direction === 'up' || direction === 'down') {
-        console.log('Added to COLUMN: x:', randomCell.x+1, ' y:', randomCell.y+1);
+        // console.log('Added to COLUMN: x:', randomCell.x+1, ' y:', randomCell.y+1);
       }
       else if (direction === 'left' || direction === 'right') {
-        console.log('Added to ROW: x:', randomCell.x+1, ' y:', randomCell.y+1);
+        // console.log('Added to ROW: x:', randomCell.x+1, ' y:', randomCell.y+1);
       }
     }
   }
