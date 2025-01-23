@@ -29,7 +29,7 @@ export default class Game2048 extends Component {
   @tracked gameOver = false;
   @tracked maxScore = 0;
 
-  @tracked isRowColMode = this.isMobile ? false : true;
+  @tracked isRowColMode = this.isMobile ? true : false;
 
   @tracked isInfoDialogOpen = false;
 
