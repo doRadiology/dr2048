@@ -14,8 +14,10 @@ type Tile = {
 
 type GameState = {
   tiles: { value: number; x: number; y: number; id: number }[];
-  score: number;
-  maxScore: number;
+  sumScore: number;
+  classicScore: number;
+  maxSumScore: number;
+  maxClassicScore: number;
   gameOver: boolean;
   tileId: number;
 };
@@ -25,9 +27,12 @@ type Direction = 'up' | 'down' | 'left' | 'right';
 export default class Game2048 extends Component {
   @tracked tiles: Tile[] = [];
 
-  @tracked score = 0;
+  @tracked sumScore = 0;
+  @tracked classicScore = 0;
+  @tracked maxSumScore = 0;
+  @tracked maxClassicScore = 0;
+  @tracked isSumScoreMode = false;
   @tracked gameOver = false;
-  @tracked maxScore = 0;
 
   @tracked isRowColMode = this.isMobile ? true : false;
   @tracked isFixedFourMode = false;
@@ -62,7 +67,8 @@ export default class Game2048 extends Component {
 
   setupNewGame() {
     this.tiles = [];
-    this.score = 0;
+    this.sumScore = 0;
+    this.classicScore = 0;
     this.gameOver = false;
     this.tileId = 0;
     this.addRandomTile();
@@ -174,6 +180,10 @@ export default class Game2048 extends Component {
   toggleInfoDialog = () => {
     this.isInfoDialogOpen = !this.isInfoDialogOpen;
   };
+
+  toggleSumScoreMode = () => {
+    this.isSumScoreMode = !this.isSumScoreMode;
+  };
  
   handleKeyDown = (event: KeyboardEvent) => {
     if (this.gameOver) {
@@ -284,10 +294,21 @@ export default class Game2048 extends Component {
     target.value *= 2;
     target.merged = true;
     this.updateTileClass(target);
-    this.score += target.value;
-    if (this.score > this.maxScore) {
-      this.maxScore = this.score;
+
+    this.classicScore += target.value;
+    
+    this.sumScore = -0.5 * target.value;
+    this.tiles.forEach((tile) => {
+      this.sumScore += tile.value;
+    });    
+  
+    if (this.sumScore > this.maxSumScore) {
+      this.maxSumScore = this.sumScore;
     }
+    if (this.classicScore > this.maxClassicScore) {
+      this.maxClassicScore = this.classicScore;
+    }
+    
 
     try {
       window.Telegram.WebApp.HapticFeedback.impactOccurred('light');
@@ -538,8 +559,10 @@ export default class Game2048 extends Component {
 
   stateToSave: null | {
     tiles: { value: number; x: number; y: number; id: number }[];
-    score: number;
-    maxScore: number;
+    sumScore: number;
+    classicScore: number;    
+    maxSumScore: number;
+    maxClassicScore: number;
     gameOver: boolean;
     tileId: number;
   } = null;
@@ -552,8 +575,10 @@ export default class Game2048 extends Component {
         y: tile.y,
         id: tile.id,
       })),
-      score: this.score,
-      maxScore: this.maxScore,
+      sumScore: this.sumScore,
+      classicScore: this.classicScore,
+      maxSumScore: this.maxSumScore,
+      maxClassicScore: this.maxClassicScore,
       gameOver: this.gameOver,
       tileId: this.tileId,
     };
@@ -569,7 +594,7 @@ export default class Game2048 extends Component {
     const gameState = this.stateToSave;
     localStorage.setItem('gameState', JSON.stringify(gameState));
     try {
-      if (this.score === 0) {
+      if (this.classicScore === 0) {
         return;
       }
       window.Telegram.WebApp.CloudStorage.setItem(
@@ -581,8 +606,28 @@ export default class Game2048 extends Component {
     }
   }
 
+  get score() {
+    if( this.isSumScoreMode ) {
+      return this.sumScore;
+    } else {
+      return this.classicScore;
+    }
+  }
+
+  get maxScore() {
+    if( this.isSumScoreMode ) {
+      return this.maxSumScore;
+    } else {
+      return this.maxClassicScore;
+    }
+  }
+
   get showMaxScore() {
-    return this.maxScore > this.score;
+    if( this.isSumScoreMode ) {
+      return this.maxSumScore > this.sumScore;
+    } else {
+      return this.maxClassicScore > this.classicScore;
+    }
   }
 
   mergedTimeout: number | undefined = -1;
@@ -611,8 +656,10 @@ export default class Game2048 extends Component {
       this.updateTileClass(tile);
       return tile;
     });
-    this.score = gameState.score;
-    this.maxScore = gameState.maxScore || gameState.score;
+    this.sumScore = gameState.sumScore;
+    this.classicScore = gameState.classicScore;
+    this.maxSumScore = gameState.maxSumScore || gameState.sumScore;
+    this.maxClassicScore = gameState.maxClassicScore || gameState.classicScore;
     this.gameOver = gameState.gameOver;
     this.tileId = gameState.tileId;
   }
@@ -717,6 +764,12 @@ export default class Game2048 extends Component {
         <div class='flex flex-row items-center gap-[10px]'>
           <button
             type="button"
+            class={{if this.isSumScoreMode "mt-4 px-4 py-2 bg-red-500 text-white rounded" "mt-4 px-4 py-2 bg-gray-500 text-white rounded"}}
+            {{on 'click' this.toggleSumScoreMode}}
+          >{{if this.isSumScoreMode '∑(tiles)' '∑(merged)'}}
+          </button>
+          <button
+            type="button"
             class={{if this.isRowColMode "mt-4 px-4 py-2 bg-red-500 text-white rounded" "mt-4 px-4 py-2 bg-gray-500 text-white rounded"}}
             {{on 'click' this.toggleMode}}
           >{{if this.isRowColMode 'RowCol' 'Random'}}
@@ -725,7 +778,7 @@ export default class Game2048 extends Component {
             type="button"
             class={{if this.isFixedFourMode "mt-4 px-4 py-2 bg-red-500 text-white rounded" "mt-4 px-4 py-2 bg-gray-500 text-white rounded"}}
             {{on 'click' this.toggleFixedFourMode}}
-          >{{if this.isFixedFourMode '4ever' '2|4'}}
+          >{{if this.isFixedFourMode 'New tile: 4' 'New tile: 2|4'}}
           </button>
           </div>
       {{/if}}      
