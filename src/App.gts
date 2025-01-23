@@ -783,14 +783,15 @@ export default class Game2048 extends Component {
           </div>
       {{/if}}      
       {{#if this.isInfoDialogOpen}}
-        <div class="fixed inset-0 bg-gray-800 bg-opacity-50 flex items-center justify-center z-50" style="transform: translateY(-10%);">
+        <div class="fixed inset-0 bg-gray-800 bg-opacity-50 flex items-center justify-center z-50" style="transform: translateY(-0%);">
           <div class="bg-gray-200 p-6 rounded shadow-lg max-w-md w-full text-center">
             <h2 class="text-2xl text-black font-bold mb-4">3x3 Mobile Only</h2>
             <p class="text-gray-900 mb-4">
               (Credits: forked from <a href="https://github.com/lifeart">@LifeArt</a>)<br><br>
-              A variant of the original 2048 game with the option to (temporarily) remove the (mis)fortune factor.<br><br>
+              A variant of the original 2048 game with the option to remove the (mis)fortune factors.<br><br>
               <u>Mobile only</u>: swipe over a row or column to determine the destination of the new tile.<br><br>
-              Toggle between `Random mode` (original game play) and `RowCol mode` (swipe over destination row/col)<br>
+              Toggle between `<b>Random mode</b>` (original game play) and `<b>RowCol mode</b>` (swipe over destination row/col)<br>
+              Toggle between `<b>∑(tiles)</b>` (score is sum of all tiles) and `<b>∑(merged)</b>` (score is sum of merged tiles)<br>
             </p>
             <p class="text-gray-500 text-sm">
               <a href="https://bsky.app/profile/doradiology.com">bsky: @doRadiology.com</a><br><br>
