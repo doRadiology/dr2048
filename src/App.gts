@@ -790,8 +790,9 @@ export default class Game2048 extends Component {
               (Credits: forked from <a href="https://github.com/lifeart">@LifeArt</a>)<br><br>
               A variant of the original 2048 game with the option to remove the (mis)fortune factors.<br><br>
               <u>Mobile only</u>: swipe over a row or column to determine the destination of the new tile.<br><br>
-              Toggle between `<b>Random mode</b>` (original game play) and `<b>RowCol mode</b>` (swipe over destination row/col)<br>
-              Toggle between `<b>∑(tiles)</b>` (score is sum of all tiles) and `<b>∑(merged)</b>` (score is sum of merged tiles)<br>
+              <i>Toggle between:</i><br>
+              <b>Random mode</b> (original game play), and<br><b>RowCol mode</b> (swipe over destination row/col)<br><br>
+              <b>∑(tiles)</b> (score is sum of all tiles), and<br><b>∑(merged)</b> (score is sum of merged tiles)<br>
             </p>
             <p class="text-gray-500 text-sm">
               <a href="https://bsky.app/profile/doradiology.com">bsky: @doRadiology.com</a><br><br>
