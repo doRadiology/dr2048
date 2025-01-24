@@ -753,7 +753,7 @@ export default class Game2048 extends Component {
       </div>
       <!-- Toggles -->
       {{#if this.gameOver}}
-        <div class='mt-4 text-red-600 text-xl font-bold'>Game Over!</div>
+        <div class='mt-4 text-red-600 text-xl font-bold' style='margin:-5px;'>Game Over!</div>
       {{/if}}
       <button
         type='button'
