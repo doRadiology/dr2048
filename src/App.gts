@@ -63,6 +63,9 @@ export default class Game2048 extends Component {
     } catch (e) {
       // EOL
     }
+    if (!this.isMobile) {
+      this.isInfoDialogOpen = true;
+    }
   }
 
   setupNewGame() {
